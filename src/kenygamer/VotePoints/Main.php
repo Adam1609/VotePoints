@@ -168,7 +168,15 @@ class Main extends PluginBase{
 			$player = $player->getName();
 		}
 		$player = strtolower($player);
-		$this->vp->set($player, $this->vp->get($player, 0) + $points);
+		$this->vp->set($player, $this->getVp($player) + $points);
+	}
+	
+	public function reduceVp($player, int $points) : void{
+		if($player instanceof Player){
+			$player = $player->getName();
+		}
+		$player = strtolower($player);
+		$this->vp->set($player, $this->getVp($player) - $points);
 	}
 	
 	/**
@@ -213,7 +221,7 @@ class Main extends PluginBase{
 				    	break;
 				    }
 				    $points = (int) round($points);
-				    $this->addVp($player, -$points);
+				    $this->reduceVp($player, $points);
 				    $sender->sendMessage(TextFormat::GREEN . "Subtracted " . $points . " VP from " . $player . "!");
 				    break;
 				case "see":
@@ -258,7 +266,7 @@ class Main extends PluginBase{
 					}elseif(($player->getInventory()->getSize() - count($player->getInventory()->getContents(false))) < count($items)){
 						$result = $this->translateString("votepoints-ui3-nospace");
 					}else{
-						$this->addVp($player, -$cost);
+						$this->reduceVp($player, $cost);
 						$result = $this->translateString("votepoints-ui3-ok", $cost, $this->prizes[$prize]->name);
 						foreach($items as $item){
 							$player->getInventory()->addItem($item);
